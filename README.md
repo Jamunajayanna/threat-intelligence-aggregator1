@@ -21,6 +21,19 @@ Tech Stack
 
 Project Structure
 
+src/
+├── app.py # Flask app + routes
+├── main.py # Entry launcher
+├── threat_fetcher.py
+├── extract_iocs.py
+├── llm_service.py
+
+templates/ # Jinja2 HTML
+static/css/ # Styles
+static/js/ # Frontend logic
+
+
+
 threat-intelligence-aggregator1/
 │
 ├── 📁 src/
@@ -30,7 +43,6 @@ threat-intelligence-aggregator1/
 │   ├── threat_fetcher.py       # Module to fetch RSS/Atom feeds
 │   ├── extract_iocs.py         # Module to extract IOCs using regex
 │   ├── llm_service.py          # LLM integration via Ollama/OpenAI
-│
 ├── 📁 static/
 │   ├── 📁 css/
 │   │   └── style.css           # Custom dashboard styling
@@ -42,7 +54,7 @@ threat-intelligence-aggregator1/
 │   └── admin.html              # Admin LLM config page
 │
 ├── requirements.txt            # Python dependencies
-├── README.md                   #  Well-written project overview (see below)
+├── README.md                   # 🚀 Well-written project overview (see below)
 ├── .gitignore                  # To ignore venv/__pycache__
 └── LICENSE                     # (Optional) Add MIT/Apache license
 
