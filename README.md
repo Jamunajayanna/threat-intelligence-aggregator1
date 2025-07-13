@@ -54,7 +54,7 @@ threat-intelligence-aggregator1/
 │   └── admin.html              # Admin LLM config page
 │
 ├── requirements.txt            # Python dependencies
-├── README.md                   # 🚀 Well-written project overview (see below)
+├── README.md                   # Well-written project overview (see below)
 ├── .gitignore                  # To ignore venv/__pycache__
 └── LICENSE                     # (Optional) Add MIT/Apache license
 
