@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Configuration - Threat Intelligence</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-shield-alt me-2"></i>
+                Threat Intelligence - Admin
+            </a>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1 class="h3 mb-4">
+            <i class="fas fa-brain me-2"></i>
+            LLM Configuration
+        </h1>
+
+        <!-- LLM Status Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-server me-2"></i>
+                            Ollama (Local)
+                        </h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="ollama-status" class="badge bg-secondary">Checking...</span>
+                            <button id="start-ollama" class="btn btn-sm btn-primary">
+                                <i class="fas fa-play me-1"></i>Start
+                            </button>
+                        </div>
+                        <small class="text-muted">Local AI model for privacy</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-cloud me-2"></i>
+                            OpenAI API
+                        </h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="openai-status" class="badge bg-secondary">Checking...</span>
+                            <button id="config-openai" class="btn btn-sm btn-primary">
+                                <i class="fas fa-key me-1"></i>Configure
+                            </button>
+                        </div>
+                        <small class="text-muted">Cloud-based AI service</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-cogs me-2"></i>
+                            Enhanced Fallback
+                        </h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-success">Active</span>
+                            <button class="btn btn-sm btn-secondary" disabled>
+                                <i class="fas fa-check me-1"></i>Ready
+                            </button>
+                        </div>
+                        <small class="text-muted">Advanced rule-based system</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Panel -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-wrench me-2"></i>
+                    Configuration
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>OpenAI API Configuration</h6>
+                        <div class="mb-3">
+                            <label for="openai-key" class="form-label">API Key</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="openai-key" placeholder="sk-...">
+                                <button class="btn btn-outline-secondary" type="button" id="toggle-key">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">
+                                Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a>
+                            </small>
+                        </div>
+                        <button id="save-openai" class="btn btn-success">
+                            <i class="fas fa-save me-1"></i>Save Configuration
+                        </button>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6>Test Summarization</h6>
+                        <div class="mb-3">
+                            <label for="test-input" class="form-label">Test Text</label>
+                            <textarea class="form-control" id="test-input" rows="4" placeholder="Enter threat intelligence text to test...">http://malicious-site.com/payload.exe detected as Stealc malware family, communicating with C2 server</textarea>
+                        </div>
+                        <button id="test-summarize" class="btn btn-primary">
+                            <i class="fas fa-play me-1"></i>Test Summarization
+                        </button>
+                        <div id="test-output" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize admin dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLLMStatus();
+            
+            // Event listeners
+            document.getElementById('toggle-key').addEventListener('click', togglePasswordVisibility);
+            document.getElementById('save-openai').addEventListener('click', saveOpenAIConfig);
+            document.getElementById('test-summarize').addEventListener('click', testSummarization);
+        });
+
+        async function checkLLMStatus() {
+            try {
+                const response = await fetch('/api/llm-status');
+                const data = await response.json();
+                
+                // Update status badges
+                document.getElementById('ollama-status').textContent = data.ollama ? 'Active' : 'Inactive';
+                document.getElementById('ollama-status').className = `badge ${data.ollama ? 'bg-success' : 'bg-danger'}`;
+                
+                document.getElementById('openai-status').textContent = data.openai ? 'Configured' : 'Not Configured';
+                document.getElementById('openai-status').className = `badge ${data.openai ? 'bg-success' : 'bg-warning'}`;
+                
+            } catch (error) {
+                console.error('Error checking LLM status:', error);
+            }
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('openai-key');
+            const icon = document.querySelector('#toggle-key i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        async function saveOpenAIConfig() {
+            const key = document.getElementById('openai-key').value;
+            if (!key) {
+                alert('Please enter an OpenAI API key');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/config-openai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_key: key })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert('OpenAI configuration saved successfully');
+                    checkLLMStatus();
+                } else {
+                    alert('Error saving configuration: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error saving configuration: ' + error.message);
+            }
+        }
+
+        async function testSummarization() {
+            const input = document.getElementById('test-input').value;
+            const output = document.getElementById('test-output');
+            
+            if (!input) {
+                alert('Please enter some text to test');
+                return;
+            }
+            
+            output.innerHTML = '<div class="alert alert-info">Testing summarization...</div>';
+            
+            try {
+                const response = await fetch('/api/test-summarize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: input })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    output.innerHTML = `
+                        <div class="alert alert-success">
+                            <strong>Summary:</strong> ${data.summary}<br>
+                            <small class="text-muted">Backend used: ${data.backend}</small>
+                        </div>
+                    `;
+                } else {
+                    output.innerHTML = `<div class="alert alert-danger">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

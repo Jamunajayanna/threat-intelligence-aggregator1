@@ -1,0 +1,78 @@
+/* Custom styles for threat intelligence dashboard */
+.threat-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--bs-info);
+}
+
+.threat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.threat-card.high-risk {
+    border-left-color: var(--bs-danger);
+}
+
+.threat-card.medium-risk {
+    border-left-color: var(--bs-warning);
+}
+
+.threat-card.low-risk {
+    border-left-color: var(--bs-success);
+}
+
+.ioc-badge {
+    font-size: 0.8rem;
+    margin: 0.2rem;
+}
+
+.ioc-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.threat-summary {
+    max-height: 100px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+}
+
+.threat-meta {
+    font-size: 0.85rem;
+    color: var(--bs-secondary);
+}
+
+.badge-url {
+    background-color: var(--bs-primary);
+}
+
+.badge-ip {
+    background-color: var(--bs-warning);
+}
+
+.badge-domain {
+    background-color: var(--bs-success);
+}
+
+.badge-hash {
+    background-color: var(--bs-danger);
+}
+
+.badge-email {
+    background-color: var(--bs-secondary);
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
